@@ -5,15 +5,26 @@
 <meta content="utf-8" http-equiv="encoding">
 </head>
 <body>
-
+<canvas id="gameCanvas" width="800" height="600"></canvas>
 <script>
-    window.onload = function() {
-        console.log("Hello Wordl!");
-        console.log("I mean Hello Wordl");
-        console.log("I mean Hello");
-    }
+let canvas;
+let canvasContext;
+
+window.onload = function() {
+    // save canvas for access to dimensions
+    const canvas = document.getElementById('gameCanvas');
+    // get the cavas' 2D rendering context; reference used for draw calls to update graphics
+    const ctx = canvas.getContext('2d');
+    // make a cool gradient background
+    const cool_gradient = ctx.createLinearGradient(0, 0, 0, 170);
+    cool_gradient.addColorStop(0, "black");
+    cool_gradient.addColorStop(1, "white");
+    ctx.fillStyle = cool_gradient;
+    ctx.fillRect(20, 20, 150, 100);
+    canvas.Context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+
 </script>
-
-
 </body>
 </html>
