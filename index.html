@@ -7,28 +7,30 @@
 <meta content="utf-8" http-equiv="encoding">
 </head>
 <body>
-<canvas id="gameCanvas"></canvas>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
 <script>
-let canvas;
-let canvasContext;
+var canvas;
+var ctx;
 
 window.onload = function() {
     // Save canvas for access to dimensions
     canvas = document.getElementById('gameCanvas');
-    canvas.width = window.innerWidth; // Set canvas width to window width
-    canvas.height = window.innerHeight; // Set canvas height to window height
+    // Get the canvas' 2D rendering context
+    ctx = canvas.getContext('2d');
 
-    // Get the canvas' 2D rendering context; reference used for draw calls to update graphics
-    const ctx = canvas.getContext('2d');
+    drawEverything();
+}
 
-    // Make a cool gradient background
-    const cool_gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    cool_gradient.addColorStop(0, "black");
-    cool_gradient.addColorStop(1, "white");
-    ctx.fillStyle = cool_gradient;
-
-    // Fill the entire canvas with the gradient
+function drawEverything() {
+    // clear the screen with a solid blue rectangle
+    ctx.fillStyle = "blue";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw a white circle for the ball
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(93, 93, 10, 0, Math.PI*2, true);
+    ctx.fill();
 }
 </script>
 </body>
