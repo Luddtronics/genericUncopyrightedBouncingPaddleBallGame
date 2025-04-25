@@ -9,16 +9,26 @@
 <body>
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 <script>
-var canvas;
-var ctx;
+// variables for ball position
+var ballX = 93, ballY = 93;
+// save canvas for dimensions, and 2d context for drawing to it
+var canvas, ctx;
 
 window.onload = function() {
-    // Save canvas for access to dimensions
     canvas = document.getElementById('gameCanvas');
-    // Get the canvas' 2D rendering context
     ctx = canvas.getContext('2d');
 
-    drawEverything();
+    // refresh the screen every framesPerSecond
+    var framesPerSecond = 30;
+    // use an anonymous function to run 2 functions
+    setInterval(function() {
+        moveEverything();
+        drawEverything();
+    }, 1000/framesPerSecond);
+}
+
+function moveEverything() {
+    ballX += 2;
 }
 
 function drawEverything() {
@@ -29,7 +39,7 @@ function drawEverything() {
     // draw a white circle for the ball
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(93, 93, 10, 0, Math.PI*2, true);
+    ctx.arc(ballX, ballY, 10, 0, Math.PI*2, true);
     ctx.fill();
 }
 </script>
