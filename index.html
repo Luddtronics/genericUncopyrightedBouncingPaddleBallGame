@@ -17,7 +17,7 @@ const WINNING_SCORE = 11;
 
 // variables for ball position
 var ballX = 93, ballY = 93;
-var ballSpeedX = -1, ballSpeedY = 0;
+var ballSpeedX = 10, ballSpeedY = 0;
 
 // variables for paddle state
 var paddle1Y = 250, paddle2Y = 250;
@@ -64,16 +64,31 @@ function moveEverything() {
         ballReset();
       }
     }
+
+    // paddle2 collision detection
+    if(ballX > (canvas.width - PADDLE_THICKNESS)) { // if ball has moved beyond the left edge
+        if(ballY > paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT) {
+        ballSpeedX *= -1; // reverse ball's horizontal direction
+
+        var deltaY = ballY-(paddle2Y+PADDLE_HEIGHT/2);
+        ballSpeedY = deltaY * 0.35;
+      } else {
+        paddle1Score++;
+        ballReset();
+      }
+    }
+
     ballX += ballSpeedX;
     ballY += ballSpeedY;
 }
 
-
-// function to reset ball position
+// function to reset ball position and speed
 function ballReset() {
     ballX = canvas.width / 2;
+    ballSpeedX *= -1;
     ballY = canvas.height / 2;
 }
+
 // function to draw solid colored rectangles
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
     ctx.fillStyle = fillColor;
