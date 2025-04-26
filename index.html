@@ -43,22 +43,31 @@ function moveEverything() {
     ballY += ballSpeedY
 }
 
+// function to draw solid colored rectangles
+function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(topLeftX, topLeftY, boxWidth, boxHeight);
+}
+
+// function to draw a solid colored circle
+function colorCircle(centerX, centerY, radius, fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI*2, true);
+    ctx.fill();
+}
+
 function drawEverything() {
     // clear the screen with a solid blue rectangle
-    ctx.fillStyle = "blue";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    colorRect(0, 0, canvas.width, canvas.height, "blue");
 
-    // draw a white circle for the ball
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, 10, 0, Math.PI*2, true);
-    ctx.fill();
-    
     // draw a white rectangle 250 down, 10 px w, 100 px h
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 250, 10, 100);
-    
+    colorRect(0, 250, 10, 100, "white");
+   
+    // draw a white circle for the ball
+    colorCircle(ballX, ballY, 10, 'white');
 }
+// step 12
 </script>
 </body>
 </html>
