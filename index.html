@@ -82,6 +82,23 @@ function moveEverything() {
     ballY += ballSpeedY;
 }
 
+function drawEverything() {
+    // draw the background
+    colorRect(0, 0, canvas.width, canvas.height, "blue");
+
+    // draw left (player) paddle: a white rectangle w y position set by the mouse, 10 px w, 100 px h
+    colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+
+    // draw right (ai) paddle
+    colorRect(canvas.width - 10, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+   
+    // draw the ball: a white circle
+    colorCircle(ballX, ballY, 10, 'white');
+
+    //write score
+    writeText("bold 20px Lucida Console", 'Score Goes Here', 100, 100);
+}
+
 // function to reset ball position and speed
 function ballReset() {
     ballX = canvas.width / 2;
@@ -103,18 +120,9 @@ function colorCircle(centerX, centerY, radius, fillColor) {
     ctx.fill();
 }
 
-function drawEverything() {
-    // draw the background
-    colorRect(0, 0, canvas.width, canvas.height, "blue");
-
-    // draw left (player) paddle: a white rectangle w y position set by the mouse, 10 px w, 100 px h
-    colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
-
-    // draw right (ai) paddle
-    colorRect(canvas.width - 10, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
-   
-    // draw the ball: a white circle
-    colorCircle(ballX, ballY, 10, 'white');
+function writeText(font, text, x, y) {
+    ctx.font = "font";
+    ctx.strokeText(text,x,y);
 }
 
 function calculateMousPos(evt) {
