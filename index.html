@@ -14,11 +14,16 @@ var ballX = 93, ballY = 93;
 var ballSpeedX = 6, ballSpeedY = 6;
 // save canvas for dimensions, and 2d context for drawing to it
 var canvas, ctx;
+const PADDLE_HEIGHT = 100;
+var paddle1Y = 100
 
 window.onload = function() {
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
-
+    canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = calculateMousPos(evt);
+        paddle1Y = mousePos.y - (PADDLE_HEIGHT/2); // minus half height, to center it
+    });
     // refresh the screen every framesPerSecond
     var framesPerSecond = 30;
     // use an anonymous function to run 2 functions
@@ -58,16 +63,27 @@ function colorCircle(centerX, centerY, radius, fillColor) {
 }
 
 function drawEverything() {
-    // clear the screen with a solid blue rectangle
+    // draw the background
     colorRect(0, 0, canvas.width, canvas.height, "blue");
 
-    // draw a white rectangle 250 down, 10 px w, 100 px h
-    colorRect(0, 250, 10, 100, "white");
+    // draw left paddle: a white rectangle w y position set by the mouse, 10 px w, 100 px h
+    colorRect(0, paddle1Y, 10, 100, "white");
    
-    // draw a white circle for the ball
+    // draw the ball: a white circle
     colorCircle(ballX, ballY, 10, 'white');
 }
-// step 12
+
+function calculateMousPos(evt) {
+    var rect = canvas.getBoundingClientRect(), root = document.documentElement;
+
+    // account for the margins, canvas position on the page, scroll amount, etc.
+    var mouseX = evt.clientX - rect.left - root.scrollLeft;
+    var mouseY = evt.clientY - rect.top - root.scrollTop;
+    return {
+        x: mouseX,
+        y: mouseY
+    };
+}
 </script>
 </body>
 </html>
