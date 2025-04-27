@@ -13,11 +13,14 @@
 // This project made using Chris DeLeon's Hands-on Intro to Game Programming v5
 const PADDLE_HEIGHT = 100;
 const PADDLE_THICKNESS = 10;
-const WINNING_SCORE = 11;
+const WINNING_SCORE = 3;
 
 // variables for ball position
 var ballX = 93, ballY = 93;
-var ballSpeedX = 10, ballSpeedY = 0;
+var ballSpeedX = 25, ballSpeedY = 0;
+
+//variable for paddle2 speed
+const paddle2Speed = 7;
 
 // variables for paddle state
 var paddle1Y = 250, paddle2Y = 250;
@@ -46,6 +49,9 @@ window.onload = function() {
 }
 
 function moveEverything() {
+
+    moveComputerPaddle()
+
     // bounce the ball when it hits a wall vertically
     if (ballY > canvas.height) {
         ballSpeedY *= -1;
@@ -54,25 +60,25 @@ function moveEverything() {
     }
     // paddle1 collision detection
     if(ballX < PADDLE_THICKNESS) { // if ball has moved beyond the left edge
-      if(ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {
-        ballSpeedX *= -1; // reverse ball's horizontal direction
+        if(ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {
+            ballSpeedX *= -1; // reverse ball's horizontal direction
 
-        var deltaY = ballY-(paddle1Y+PADDLE_HEIGHT/2);
-        ballSpeedY = deltaY * 0.35;
-      } else {
+            var deltaY = ballY-(paddle1Y+PADDLE_HEIGHT/2);
+            ballSpeedY = deltaY * 0.35;
+        } else {
         paddle2Score++;
         ballReset();
-      }
+        }
     }
 
     // paddle2 collision detection
     if(ballX > (canvas.width - PADDLE_THICKNESS)) { // if ball has moved beyond the left edge
         if(ballY > paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT) {
-        ballSpeedX *= -1; // reverse ball's horizontal direction
-
-        var deltaY = ballY-(paddle2Y+PADDLE_HEIGHT/2);
-        ballSpeedY = deltaY * 0.35;
-      } else {
+            ballSpeedX *= -1; // reverse ball's horizontal direction
+            
+            var deltaY = ballY-(paddle2Y+PADDLE_HEIGHT/2);
+            ballSpeedY = deltaY * 0.35;
+        } else {
         paddle1Score++;
         ballReset();
       }
@@ -96,14 +102,33 @@ function drawEverything() {
     colorCircle(ballX, ballY, 10, 'white');
 
     //write score
-    writeText("bold 20px Lucida Console", 'Score Goes Here', 100, 100);
+    writeText("Lucida Console", `Krondor (you): ${paddle1Score} | The Dark One (ai): ${paddle2Score}`, 50, 50);
+}
+
+function moveComputerPaddle() {
+    const tolerance = 35;
+    if (ballY > (paddle2Y + (PADDLE_HEIGHT/2) + tolerance)) {
+        paddle2Y += paddle2Speed;
+    } else if (ballY < (paddle2Y + (PADDLE_HEIGHT/2)) - tolerance) {
+        paddle2Y -= paddle2Speed;
+    }
 }
 
 // function to reset ball position and speed
 function ballReset() {
+    checkScore(paddle1Score);
+    checkScore(paddle2Score);
     ballX = canvas.width / 2;
-    ballSpeedX *= -1;
     ballY = canvas.height / 2;
+    ballSpeedX *= -1;
+    ballSpeedY = 0;
+}
+
+function checkScore() {
+    if (paddle1Score === WINNING_SCORE || paddle2Score === WINNING_SCORE) {
+        paddle1Score = 0;
+        paddle2Score = 0;
+    }
 }
 
 // function to draw solid colored rectangles
@@ -120,9 +145,10 @@ function colorCircle(centerX, centerY, radius, fillColor) {
     ctx.fill();
 }
 
+// function to write text to the canvas
 function writeText(font, text, x, y) {
-    ctx.font = "font";
-    ctx.strokeText(text,x,y);
+    ctx.font = font;
+    ctx.fillText(text,x,y);
 }
 
 function calculateMousPos(evt) {
