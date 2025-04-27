@@ -14,17 +14,19 @@
 const PADDLE_HEIGHT = 100;
 const PADDLE_THICKNESS = 10;
 const WINNING_SCORE = 3;
+const PADDLE2SPEED = 9.0;
 
 // variables for ball position
 var ballX = 93, ballY = 93;
-var ballSpeedX = 25, ballSpeedY = 0;
+var ballSpeedX = 15, ballSpeedY = 10;
 
-//variable for paddle2 speed
-const paddle2Speed = 7;
+
+var showingWinScreen = false;
 
 // variables for paddle state
 var paddle1Y = 250, paddle2Y = 250;
 var paddle1Score = 0, paddle2Score = 0;
+var paddle1Name = "Krondor", paddle2Name = "The Dark One"
 
 // save canvas for dimensions, and 2d context for drawing to it
 var canvas, ctx;
@@ -34,11 +36,13 @@ window.onload = function() {
     ctx = canvas.getContext('2d');
 
     // mouse handlers
+    canvas.addEventListener('mousedown', handleMouseClick);
     canvas.addEventListener('mousemove', function(evt) {
         var mousePos = calculateMousPos(evt);
         paddle1Y = mousePos.y - (PADDLE_HEIGHT/2); // minus half height, to center it
     });
-    // canvas.addEventListener('mousedown', handleMouseClick);
+
+    canvas.textAlign = 'center';
 
     // refresh the screen every framesPerSecond
     var framesPerSecond = 30;
@@ -49,6 +53,9 @@ window.onload = function() {
 }
 
 function moveEverything() {
+    if (showingWinScreen) {
+        return;
+    }
 
     moveComputerPaddle()
 
@@ -92,63 +99,70 @@ function drawEverything() {
     // draw the background
     colorRect(0, 0, canvas.width, canvas.height, "blue");
 
+    if (showingWinScreen) {
+        if (paddle1Score >= WINNING_SCORE) {
+        writeText(`${paddle1Name} WINS!`, canvas.width/2 - 50,canvas.height/2,'white');
+    } else if (paddle2Score >= WINNING_SCORE) {
+        writeText(`${paddle2Name} WINS!`, canvas.width/2 - 50,canvas.height/2,'red');
+    }
+    writeText("** once more into the breach. click anymore. **", canvas.width/2 - 50,canvas.height/2 + 25,"white");
+    } else{
     // draw left (player) paddle: a white rectangle w y position set by the mouse, 10 px w, 100 px h
     colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
 
     // draw right (ai) paddle
     colorRect(canvas.width - 10, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+
+    drawNet();
    
     // draw the ball: a white circle
     colorCircle(ballX, ballY, 10, 'white');
 
     //write score
-    writeText("Lucida Console", `Krondor (you): ${paddle1Score} | The Dark One (ai): ${paddle2Score}`, 50, 50);
+    writeText(`Krondor (you): ${paddle1Score} | The Dark One (ai): ${paddle2Score}`, canvas.width /2 - 50, 50,"white");
+
+    }
 }
 
 function moveComputerPaddle() {
     const tolerance = 35;
     if (ballY > (paddle2Y + (PADDLE_HEIGHT/2) + tolerance)) {
-        paddle2Y += paddle2Speed;
+        paddle2Y += PADDLE2SPEED;
     } else if (ballY < (paddle2Y + (PADDLE_HEIGHT/2)) - tolerance) {
-        paddle2Y -= paddle2Speed;
+        paddle2Y -= PADDLE2SPEED;
     }
 }
 
 // function to reset ball position and speed
 function ballReset() {
-    checkScore(paddle1Score);
-    checkScore(paddle2Score);
+    if (paddle1Score >= WINNING_SCORE || paddle2Score >= WINNING_SCORE) {
+        showingWinScreen = true;
+    }
     ballX = canvas.width / 2;
     ballY = canvas.height / 2;
     ballSpeedX *= -1;
-    ballSpeedY = 0;
+    ballSpeedY = 7.0;
 }
 
-function checkScore() {
-    if (paddle1Score === WINNING_SCORE || paddle2Score === WINNING_SCORE) {
-        paddle1Score = 0;
-        paddle2Score = 0;
-    }
-}
-
-// function to draw solid colored rectangles
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
     ctx.fillStyle = fillColor;
     ctx.fillRect(topLeftX, topLeftY, boxWidth, boxHeight);
 }
-
-// function to draw a solid colored circle
 function colorCircle(centerX, centerY, radius, fillColor) {
     ctx.fillStyle = fillColor;
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI*2, true);
     ctx.fill();
 }
+function writeText(showWords, textX, textY, fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fillText(showWords, textX, textY);
+  }
 
-// function to write text to the canvas
-function writeText(font, text, x, y) {
-    ctx.font = font;
-    ctx.fillText(text,x,y);
+function drawNet() {
+    for(var i=0; i<canvas.height; i+=40) {
+      colorRect(canvas.width/2-1,i,2,20,'white');
+    }
 }
 
 function calculateMousPos(evt) {
@@ -162,6 +176,14 @@ function calculateMousPos(evt) {
         y: mouseY
     };
 }
+
+function handleMouseClick(evt) {
+    if(showingWinScreen) {
+       paddle1Score = 0;
+       paddle2Score = 0;
+       showingWinScreen = false;
+    }
+}  
 </script>
 </body>
 </html>
